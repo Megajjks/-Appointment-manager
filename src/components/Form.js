@@ -1,5 +1,8 @@
 import React, {Fragment, useState} from 'react';
-const Form = () => {
+import AlertDanger from './AlertDanger';
+import uuid from 'uuid/v4';
+
+const Form = ({crearCita}) => {
     
     //crear state
     const [cita, actualizarCita] = useState({
@@ -9,6 +12,7 @@ const Form = () => {
         hora:"",
         sintomas:""
     })
+    const [error, setError] = useState(false)
     
     //crear funciones
     const handleOnChange= e =>{
@@ -20,10 +24,35 @@ const Form = () => {
     
     //Extraer valores
     const {mascota,propietario,fecha,hora,sintomas} = cita
+    // Cuando el usuario presione agregar cita
+    const submitCita = e =>{
+        e.preventDefault();
+        // validar
+        // la función trim ayuda a eliminar los espacios en blanco
+        if(mascota.trim()==='' || propietario.trim()==='' || fecha.trim()==='' || hora.trim()==='' || sintomas.trim()===''){
+            return setError(true)
+        }
+        //Eliminar el mensaje de error 
+        setError(false)
+        // Asignar una Id a la cita
+        cita.id = uuid();
+        // crear la tabla
+        crearCita(cita)
+        // Reiniciar el form
+        actualizarCita({
+            mascota:"",
+            propietario:"",
+            fecha:"",
+            hora:"",
+            sintomas:""
+        })
+    }
+
 
     return ( 
         <Fragment>
             <h2>📅Crear una cita</h2>
+            {error?<AlertDanger content="Todos los campos son obligatiorios"/>:null}
             <form>
                 <label>Nombre de Mascota</label>
                 <input
@@ -64,10 +93,12 @@ const Form = () => {
                     className="u-full-width"
                     onChange={handleOnChange}
                     value={sintomas}
+                    name="sintomas"
                 ></textarea>
                 <button
                     type="submit"
                     className="u-full-width button-primary"
+                    onClick={submitCita}
                 >Agregar cita</button>
             </form>
         </Fragment>

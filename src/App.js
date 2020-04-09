@@ -1,5 +1,7 @@
 import React from 'react';
-import GenericHome from './components/GenericHome'
+import GenericHome from './components/GenericHome';
+
+
 
 function App() {
   return (
